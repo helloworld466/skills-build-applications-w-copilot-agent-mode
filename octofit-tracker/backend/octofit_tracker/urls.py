@@ -13,9 +13,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
+from django.http import JsonResponse
+
+CODESPACE_NAME = os.environ.get('CODESPACE_NAME', '')
+API_BASE_URL = f'https://{CODESPACE_NAME}-8000.app.github.dev/api/' if CODESPACE_NAME else 'http://localhost:8000/api/'
+
+def api_root(request):
+    return JsonResponse({
+        'users': f'{API_BASE_URL}users/',
+        'teams': f'{API_BASE_URL}teams/',
+        'activities': f'{API_BASE_URL}activities/',
+        'workouts': f'{API_BASE_URL}workouts/',
+        'leaderboard': f'{API_BASE_URL}leaderboard/',
+    })
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', api_root, name='api-root'),
+    # Add actual endpoints for each model below (assuming views are defined)
+    # path('api/users/', ...),
+    # path('api/teams/', ...),
+    # path('api/activities/', ...),
+    # path('api/workouts/', ...),
+    # path('api/leaderboard/', ...),
 ]
